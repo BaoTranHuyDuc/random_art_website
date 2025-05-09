@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Absence - Final Project</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        /* Intro Screen Styles */
+        #introScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        #beginButton {
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+            padding: 15px 30px;
+            font-size: 1.5em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #beginButton:hover {
+            background-color: #555;
+            color: #eee;
+        }
+
+        /* Main Application Screen */
+        #mainAppScreen {
+            display: none;
+            height: 100%;
+            width: 100%;
+            flex-direction: column;
+            padding: 30px; /* Overall padding from screen edges */
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .corner-info {
+            position: absolute;
+            /* === CHANGE CORNER TEXT SIZE HERE (base size) === */
+            font-size: 1.1em; /* Increased base size */
+            color: #ccc;
+            line-height: 1.4;
+        }
+        .corner-info.top-left {
+            top: 30px;
+            left: 30px;
+        }
+        .corner-info.top-right {
+            top: 30px;
+            right: 30px;
+            text-align: right;
+        }
+        .corner-info .project-title {
+            font-weight: bold;
+            color: #fff;
+            /* === CHANGE CORNER PROJECT TITLE TEXT SIZE HERE (relative to base) === */
+            font-size: 1.3em; /* Increased project title size relative to corner-info base */
+        }
+
+        .main-title-wrapper {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .main-title-centered {
+            font-size: clamp(3em, 10vw, 7em);
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: #E0E0E0;
+            margin: 0;
+        }
+
+        .player-controls-bottom {
+            width: 90%; /* Make media bar wider, e.g., 90% of available width */
+            max-width: 1000px; /* Optional: Set a max-width if 90% gets too wide on very large screens */
+            margin: 0 auto;
+            padding-top: 20px;
+            padding-bottom: 10px;
+        }
+
+        .progress-bar-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.8em;
+            color: #bbb;
+        }
+
+        .progress-bar-container .time {
+            padding: 0 10px;
+            min-width: 35px;
+            text-align: center;
+        }
+
+        #progressBar {
+            flex-grow: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #555;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+            border-radius: 4px;
+        }
+
+        #progressBar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #ddd;
+            border-radius: 50%;
+            border: 2px solid #555;
+        }
+
+        #progressBar::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #ddd;
+            border-radius: 50%;
+            border: 2px solid #555;
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .buttons-container button {
+            background: none;
+            border: none;
+            color: #ccc;
+            font-size: 1.8em;
+            cursor: pointer;
+            padding: 10px 20px;
+            transition: color 0.2s;
+        }
+
+        .buttons-container button:hover {
+            color: #fff;
+        }
+
+        #playPauseButton {
+            font-size: 2.5em;
+        }
+
+        #micAudio {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="introScreen">
+        <button id="beginButton">Let's Begin</button>
+    </div>
+
+    <div id="mainAppScreen">
+        <header class="corner-info top-left">
+            <div>Tran Truong Bao Khiem</div>
+            <div class="project-title">Final project</div>
+        </header>
+        <header class="corner-info top-right">
+            <div>ARTS 303</div>
+            <div>Sound Art</div>
+        </header>
+
+        <div class="main-title-wrapper">
+            <h1 class="main-title-centered">THE ABSENCE</h1>
+        </div>
+
+        <div class="player-controls-bottom">
+            <div class="progress-bar-container">
+                <span id="currentTime" class="time">0:00</span>
+                <input type="range" id="progressBar" value="0" min="0" max="100" disabled>
+                <span id="totalTime" class="time">0:00</span>
+            </div>
+            <div class="buttons-container">
+                <button id="skipBackwardButton" title="Skip Backward">⏪</button>
+                <button id="playPauseButton" title="Play/Pause">▶</button>
+                <button id="skipForwardButton" title="Skip Forward">⏩</button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="noiseAudio" src="noise.mp3" loop></audio>
+    <audio id="micAudio"></audio>
+
+    <script>
+        const introScreen = document.getElementById('introScreen');
+        const beginButton = document.getElementById('beginButton');
+        const mainAppScreen = document.getElementById('mainAppScreen');
+
+        const noiseAudio = document.getElementById('noiseAudio');
+        const micAudio = document.getElementById('micAudio');
+        const playPauseButton = document.getElementById('playPauseButton');
+        const progressBar = document.getElementById('progressBar');
+        const currentTimeDisplay = document.getElementById('currentTime');
+        const totalTimeDisplay = document.getElementById('totalTime');
+
+        let micStream = null;
+        let audioContext = null;
+        let isMicActive = false;
+        let isMicPlaybackPaused = false;
+        let recordingTimerId = null;
+        let progressIntervalId = null;
+        let timeLeftForMic = 0;
+
+        // --- Configuration ---
+        const MIC_RECORDING_DURATION_MS = 3 * 60 * 1000;
+        // const MIC_RECORDING_DURATION_MS = 15 * 1000; // For testing
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        function updateProgressBarAndTimes() {
+            totalTimeDisplay.textContent = formatTime(MIC_RECORDING_DURATION_MS / 1000);
+
+            if (isMicActive) {
+                const elapsedTime = MIC_RECORDING_DURATION_MS - timeLeftForMic;
+                const progress = (elapsedTime / MIC_RECORDING_DURATION_MS) * 100;
+                progressBar.value = Math.max(0, Math.min(100, progress));
+                currentTimeDisplay.textContent = formatTime(Math.max(0, elapsedTime / 1000));
+            } else {
+                progressBar.value = 0;
+                currentTimeDisplay.textContent = formatTime(0);
+            }
+        }
+
+        async function startMicRecordingSession() {
+            if (isMicActive) return;
+
+            noiseAudio.pause();
+            if (progressIntervalId) clearInterval(progressIntervalId);
+
+            if (window.AudioContext && !audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioContext && audioContext.state === 'suspended') {
+                try { await audioContext.resume(); } catch(e) { console.warn("AudioContext resume failed", e); }
+            }
+
+            try {
+                micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                isMicActive = true;
+                isMicPlaybackPaused = false;
+                playPauseButton.textContent = '❚❚';
+                playPauseButton.title = "Pause Mic Feedback";
+
+                micAudio.srcObject = micStream;
+                micAudio.play().catch(e => console.error("Error playing mic audio:", e));
+                console.log("Microphone recording session started. Feedback playing.");
+
+                timeLeftForMic = MIC_RECORDING_DURATION_MS;
+                updateProgressBarAndTimes();
+
+                if (progressIntervalId) clearInterval(progressIntervalId);
+                progressIntervalId = setInterval(() => {
+                    if (timeLeftForMic > 0) {
+                        timeLeftForMic -= 100;
+                    }
+                    updateProgressBarAndTimes();
+                    if (timeLeftForMic <= 0) {
+                        stopMicSessionAndPlayNoise();
+                    }
+                }, 100);
+
+                if (recordingTimerId) clearTimeout(recordingTimerId);
+                recordingTimerId = setTimeout(stopMicSessionAndPlayNoise, MIC_RECORDING_DURATION_MS);
+
+            } catch (err) {
+                console.error("Error accessing microphone:", err);
+                alert("Could not access microphone. Please check permissions. " + err.message);
+                switchToNoiseMode();
+            }
+        }
+
+        function stopMicSession() {
+            if (!isMicActive) return;
+
+            if (micStream) {
+                micStream.getTracks().forEach(track => track.stop());
+                micStream = null;
+            }
+            micAudio.pause();
+            micAudio.srcObject = null;
+
+            isMicActive = false;
+            isMicPlaybackPaused = false;
+            console.log("Microphone recording session stopped.");
+
+            if (recordingTimerId) clearTimeout(recordingTimerId);
+            recordingTimerId = null;
+            if (progressIntervalId) clearInterval(progressIntervalId);
+            progressIntervalId = null;
+        }
+
+        function switchToNoiseMode() {
+            stopMicSession();
+
+            noiseAudio.currentTime = 0;
+            noiseAudio.play().catch(error => {
+                console.warn("Noise audio play was prevented/failed:", error);
+            });
+            playPauseButton.textContent = '▶';
+            playPauseButton.title = "Start Recording";
+
+            updateProgressBarAndTimes();
+        }
+
+        function stopMicSessionAndPlayNoise() {
+            stopMicSession();
+            switchToNoiseMode();
+        }
+
+        playPauseButton.addEventListener('click', () => {
+            if (isMicActive) {
+                if (isMicPlaybackPaused) {
+                    micAudio.play().catch(e => console.error("Error resuming mic audio:", e));
+                    isMicPlaybackPaused = false;
+                    playPauseButton.textContent = '❚❚';
+                    playPauseButton.title = "Pause Mic Feedback";
+                    console.log("Mic feedback resumed.");
+                } else {
+                    micAudio.pause();
+                    isMicPlaybackPaused = true;
+                    playPauseButton.textContent = '▶';
+                    playPauseButton.title = "Resume Mic Feedback";
+                    console.log("Mic feedback paused.");
+                }
+            } else {
+                startMicRecordingSession();
+            }
+        });
+        
+        noiseAudio.onloadedmetadata = () => {
+            console.log("Noise audio metadata loaded.");
+            if (!isMicActive) {
+                updateProgressBarAndTimes();
+            }
+        };
+
+        beginButton.addEventListener('click', () => {
+            introScreen.style.display = 'none';
+            mainAppScreen.style.display = 'flex';
+
+            if (window.AudioContext && !audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume().catch(e => console.warn("AudioContext resume failed on begin", e));
+            }
+            
+            switchToNoiseMode();
+        });
+
+        window.addEventListener('load', () => {
+            updateProgressBarAndTimes();
+        });
+
+    </script>
+</body>
+</html>
