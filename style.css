@@ -59,16 +59,18 @@ button:hover {
 #topText div {
     flex: 1;
     text-align: center;
-    transform: translateX(-50px); /* Move it 20px to the left */
+    transform: translateX(-210px); /* Move it 20px to the left */
 
 }
 
 #leftText {
     text-align: left;
+    margin-left: 370px;
 }
 
 #rightText {
     text-align: right;
+    margin-right: 50px;
 }
 
 #videoOverlay {
