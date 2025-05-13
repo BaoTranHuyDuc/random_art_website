@@ -5,9 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Experience</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-
+    <div id="topText">
+        <div id="leftText">Tran Truong Bao Khiem</div>
+        <div id="centerText">ARTS 303</div>
+        <div id="rightText">Sound Art</div>
+    </div>
     <!-- Landing Page -->
     <div id="landingPage">
         <button id="beginButton">Let's begin</button>
@@ -15,11 +20,15 @@
 
     <!-- Main Page (initially hidden) -->
     <div id="mainPage" style="display: none;">
+        <img id="videoOverlay" src="image.png" alt="Thumbnail overlay">
         <video id="myVideo" width="640" height="360">
             <!-- IMPORTANT: Replace 'my_video.mp4' with the actual path to your video file -->
             <source src="video.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
+        <div id="videoProgressContainer">
+    <div id="videoProgressBar"></div>
+                                </div>
         <button id="playPauseButton">►</button>
     </div>
 

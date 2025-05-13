@@ -17,23 +17,84 @@ body {
 }
 
 #myVideo {
-    width: 75vw;
+    width: 65vw;
     height: auto; /* Don't let it exceed 85% of viewport height, to leave space for button */
-    border: 2px solid #333; /* Optional: subtle border for the video */
+    border: 2px solid #000000; /* Optional: subtle border for the video */
     margin-bottom: 20px;
 }
 
 button {
+    margin-top: 30px;
     padding: 10px 20px;
     font-size: 1.2em;
     cursor: pointer;
-    background-color: #333;
+    background-color: #000000;
     color: white;
-    border: 1px solid #555;
+    border: 1px solid #000000;
     border-radius: 5px;
     transition: background-color 0.3s ease;
+    position: relative;
+    z-index: 8;
 }
 
 button:hover {
     background-color: #555;
+}
+
+#topText {
+    position: absolute;
+    top: 50px;
+    width: 100vw;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 40px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.2em;
+    font-weight: 400;
+    color: white;
+    z-index: 10;
+    pointer-events: none; /* So it doesn't interfere with video clicks */
+}
+
+#topText div {
+    flex: 1;
+    text-align: center;
+    transform: translateX(-50px); /* Move it 20px to the left */
+
+}
+
+#leftText {
+    text-align: left;
+}
+
+#rightText {
+    text-align: right;
+}
+
+#videoOverlay {
+    position: absolute;
+    width: 75vw;
+    height: auto;
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    pointer-events: none; /* Optional: so it doesn’t block clicks */
+    z-index: 5;
+}
+
+#videoProgressContainer {
+    width: 65vw;
+    height: 8px;
+    background-color: #444;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+#videoProgressBar {
+    height: 100%;
+    width: 0%;
+    background-color: #dfdfdf;
+    transition: width 0.2s linear;
 }
