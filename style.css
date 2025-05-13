@@ -1,0 +1,39 @@
+body {
+    background-color: black;
+    color: white; /* For button text visibility */
+    margin: 0;
+    font-family: sans-serif;
+    overflow: hidden; /* Prevents scrollbars if content overflows slightly */
+}
+
+#landingPage, #mainPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Full viewport height */
+    width: 100vw;  /* Full viewport width */
+    text-align: center;
+}
+
+#myVideo {
+    width: 75vw;
+    height: auto; /* Don't let it exceed 85% of viewport height, to leave space for button */
+    border: 2px solid #333; /* Optional: subtle border for the video */
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    cursor: pointer;
+    background-color: #333;
+    color: white;
+    border: 1px solid #555;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #555;
+}
