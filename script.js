@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const playSymbol = '▶';
     const pauseSymbol = '❚❚';
-    const ORIGINAL_NOISE_VOLUME = 0.5;
-    const REDUCED_NOISE_VOLUME = 0.03;
+    const ORIGINAL_NOISE_VOLUME = 0.1;
+    const REDUCED_NOISE_VOLUME = 0.02;
     const FADE_DURATION_MS = 2000;
 
     let volumeFadeInterval = null;
