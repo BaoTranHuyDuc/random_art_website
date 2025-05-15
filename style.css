@@ -17,7 +17,7 @@ body {
 }
 
 #myVideo {
-    width: 65vw;
+    width: 60vw;
     height: auto; /* Don't let it exceed 85% of viewport height, to leave space for button */
     border: 2px solid #000000; /* Optional: subtle border for the video */
     margin-bottom: 20px;
